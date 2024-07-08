@@ -13,6 +13,9 @@ router.use(
   })
 );
 
+router.use(express.json());
+router.use(cookieParser());
+
 router.post("/login", authController.loginUser);
 router.get("/logout", authController.logout);
 router.get("/refresh_token", authController.refreshtoken);

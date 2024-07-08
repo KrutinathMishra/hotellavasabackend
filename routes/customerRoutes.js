@@ -13,6 +13,9 @@ router.use(
   })
 );
 
+router.use(express.json());
+router.use(cookieParser());
+
 router
   .route("/")
   .post(auth, customerController.createCustomer)

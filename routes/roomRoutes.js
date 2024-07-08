@@ -13,6 +13,9 @@ router.use(
   })
 );
 
+router.use(express.json());
+router.use(cookieParser());
+
 // router.get("/", auth, roomController.getRooms);
 // router.post("/", auth, roomController.addRoom);
 router
