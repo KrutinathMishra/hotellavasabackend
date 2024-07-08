@@ -3,6 +3,7 @@ const router = express.Router();
 const dotenv = require("dotenv").config();
 const cors = require("cors");
 const auth = require("../middleware/auth");
+const cookieParser = require("cookie-parser");
 const customerController = require("../controllers/customerController");
 
 // middleware

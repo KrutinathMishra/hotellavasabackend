@@ -4,6 +4,7 @@ const dotenv = require("dotenv").config();
 const cors = require("cors");
 const authController = require("../controllers/authController");
 const auth = require("../middleware/auth");
+const cookieParser = require("cookie-parser");
 
 // middleware
 router.use(

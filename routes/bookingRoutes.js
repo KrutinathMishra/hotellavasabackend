@@ -4,6 +4,7 @@ const cors = require("cors");
 const bookingController = require("../controllers/bookingController");
 const auth = require("../middleware/auth");
 const dotenv = require("dotenv").config();
+const cookieParser = require("cookie-parser");
 
 // middleware
 router.use(
