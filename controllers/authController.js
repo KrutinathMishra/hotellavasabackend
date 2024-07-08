@@ -7,30 +7,61 @@ const authController = {
     try {
       const { name, email, password } = req.body;
 
-      if (!name) return res.json({ error: "Name is required" });
-      if (!password) return res.json({ error: "Password is required" });
-      if (password.length < 6)
+      // Check if name was entered
+      if (!name) {
         return res.json({
-          error: "Password should be at least 6 characters long",
+          error: "Name is required",
         });
-      if (!email) return res.json({ error: "Email is required" });
+      }
 
+      // Check if password was entered
+      if (!password) {
+        return res.json({
+          error: "Password is required",
+        });
+      }
+
+      // Check if password is valid
+      if (password.length < 6) {
+        return res.json({
+          error: "Password should be atleast 6 characters long",
+        });
+      }
+
+      // Check if email was entered
+      if (!email) {
+        return res.json({
+          error: "Email is required",
+        });
+      }
+
+      //  Check email is unique or not
       const exist = await User.findOne({ email });
-      if (exist) return res.json({ error: "Email is taken already" });
+      if (exist) {
+        return res.json({
+          error: "Email is taken already",
+        });
+      }
 
+      //Password Encryption
       const passwordHash = await bcrypt.hash(password, 10);
-      const newUser = new User({ name, email, password: passwordHash });
 
+      const newUser = new User({
+        name,
+        email,
+        password: passwordHash,
+      });
+
+      //Save mongodb
       await newUser.save();
 
+      //create jwt to authenticate
       const accesstoken = createAccessToken({ id: newUser._id });
       const refreshtoken = createRefreshToken({ id: newUser._id });
 
       res.cookie("refreshtoken", refreshtoken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
         path: "/admin/user/refresh_token",
-        sameSite: "None",
       });
 
       res.json({ accesstoken });
@@ -43,7 +74,7 @@ const authController = {
     try {
       const rf_token = req.cookies.refreshtoken;
 
-      if (!rf_token) return res.json({ error: "Please Login or Register" });
+      if (!rf_token) return res.json({ error: "Please Login or Registers" });
 
       jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
         if (err) return res.json({ error: "Please Login or Register" });
@@ -59,38 +90,58 @@ const authController = {
     try {
       const { email, password } = req.body;
 
-      if (!email) return res.json({ error: "Email is required" });
-      if (!password) return res.json({ error: "Password is required" });
-
-      const user = await User.findOne({ email });
-      if (!user) return res.json({ error: "User does not exist." });
-      if (password.length < 6)
+      // Check if email was entered
+      if (!email) {
         return res.json({
-          error: "Password should be at least 6 characters long",
+          error: "Email is required",
         });
+      }
 
+      // Check if password was entered
+      if (!password) {
+        return res.json({
+          error: "Password is required",
+        });
+      }
+
+      // Check user is available in DB
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.json({
+          error: "User does not exist.",
+        });
+      }
+
+      // Check if password is valid
+      if (password.length < 6) {
+        return res.json({
+          error: "Password should be atleast 6 characters long",
+        });
+      }
+
+      // Match the password
       const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) return res.json({ error: "Incorrect password." });
+      if (!isMatch) {
+        return res.json({
+          error: "Incorrect password.",
+        });
+      }
 
       const accesstoken = createAccessToken({ id: user._id });
       const refreshtoken = createRefreshToken({ id: user._id });
 
       res.cookie("refreshtoken", refreshtoken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
         path: "/admin/user/refresh_token",
-        sameSite: "None",
       });
 
       return res.json({ accesstoken });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   },
 
   logout: async (req, res) => {
     try {
-      res.clearCookie("refreshtoken", { path: "/admin/user/refresh_token" });
+      res.clearCookie("refreshtoken", { path: "/user/refresh_token" });
       return res.json({ msg: "Log Out" });
     } catch (err) {
       console.log(err);
@@ -114,11 +165,11 @@ const createAccessToken = (payload) => {
     expiresIn: "1d",
   });
 };
-
 const createRefreshToken = (payload) => {
   return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: "7d",
   });
 };
+// hello
 
 module.exports = authController;
