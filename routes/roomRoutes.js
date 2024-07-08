@@ -13,7 +13,11 @@ router.use(
   })
 );
 
-router.route("/").get(roomController.getRooms).post(roomController.addRoom);
+router.get("/", auth, roomController.getRooms);
+// router
+//   .route("/")
+//   .get(auth, roomController.getRooms)
+//   .post(roomController.addRoom);
 
 router
   .route("/:id")
