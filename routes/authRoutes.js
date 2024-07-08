@@ -13,7 +13,6 @@ router.use(
   })
 );
 
-router.post("/register", authController.registerUser);
 router.post("/login", authController.loginUser);
 router.get("/logout", authController.logout);
 router.get("/refresh_token", authController.refreshtoken);

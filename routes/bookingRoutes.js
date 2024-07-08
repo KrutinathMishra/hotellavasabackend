@@ -15,14 +15,16 @@ router.use(
 
 router
   .route("/")
-  .post(bookingController.createBooking)
-  .get(bookingController.getBookings);
+  .post(auth, bookingController.createBooking)
+  .get(auth, bookingController.getBookings);
 
 router
   .route("/:id")
-  .delete(bookingController.deleteBooking)
-  .put(bookingController.updateBooking);
+  .delete(auth, bookingController.deleteBooking)
+  .put(auth, bookingController.updateBooking);
 
-router.route("/clear-balance/:id").put(bookingController.clearBookingBalance);
+router
+  .route("/clear-balance/:id")
+  .put(auth, bookingController.clearBookingBalance);
 
 module.exports = router;

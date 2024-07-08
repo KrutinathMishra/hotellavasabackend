@@ -13,17 +13,20 @@ router.use(
   })
 );
 
-router.get("/", auth, roomController.getRooms);
-// router
-//   .route("/")
-//   .get(auth, roomController.getRooms)
-//   .post(roomController.addRoom);
+// router.get("/", auth, roomController.getRooms);
+// router.post("/", auth, roomController.addRoom);
+router
+  .route("/")
+  .get(auth, roomController.getRooms)
+  .post(auth, roomController.addRoom);
 
 router
   .route("/:id")
-  .delete(roomController.deleteRoom)
-  .put(roomController.updateRoom);
+  .delete(auth, roomController.deleteRoom)
+  .put(auth, roomController.updateRoom);
 
-router.route("/update_room_status/:id").put(roomController.updateRoomStatus);
+router
+  .route("/update_room_status/:id")
+  .put(auth, roomController.updateRoomStatus);
 
 module.exports = router;
