@@ -33,7 +33,8 @@ const authController = {
 
       res.cookie("refreshtoken", refreshtoken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "None", // Use secure cookies in production
         path: "/admin/user/refresh_token",
       });
 
@@ -89,6 +90,7 @@ const authController = {
       res.cookie("refreshtoken", refreshtoken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+        sameSite: "None",
         path: "/admin/user/refresh_token",
       });
 
